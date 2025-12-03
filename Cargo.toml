@@ -1,0 +1,16 @@
+[package]
+name = "neuroxyde"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+prost = "0.12"
+prost-types = "0.12"
+memmap2 = "0.9"
+thiserror = "1.0"
+tracing = "0.1"
+anyhow = "1.0.100"
+
+[build-dependencies]
+prost-build = "0.12"
