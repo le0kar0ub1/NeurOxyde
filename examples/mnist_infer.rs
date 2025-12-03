@@ -1,5 +1,6 @@
 // https://github.com/onnx/models/tree/main/validated/vision/classification/mnist
 use neuroxyde::loader::ModelLoader;
+use neuroxyde::graph::Graph;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
@@ -9,8 +10,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         panic!("Usage: mnist_infer <model_path>");
     };
 
-    let _model = ModelLoader::load_from_file(model_path)?;
-    println!("MNIST inference example placeholder");
+    let model = ModelLoader::load_from_file(model_path)?;
+    let graph = Graph::from_model(&model)?;
+    // println!("Model: {:#?}", model);
+    println!("{}", graph);
     Ok(())
 }
 

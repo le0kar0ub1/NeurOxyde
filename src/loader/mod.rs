@@ -7,6 +7,7 @@ use std::fs::File;
 use std::io::Read;
 use prost::Message;
 use crate::onnx::onnx_proto::ModelProto;
+use std::fmt;
 
 #[derive(Error, Debug)]
 pub enum LoaderError {
@@ -17,11 +18,11 @@ pub enum LoaderError {
 }
 
 pub struct ModelLoader {
-    // Placeholder for loader state
+    pub model: ModelProto,
 }
 
 impl ModelLoader {
-    pub fn load_from_file<P: AsRef<Path>>(path: P) -> anyhow::Result<ModelProto> {
+    pub fn load_from_file<P: AsRef<Path>>(path: P) -> anyhow::Result<Self> {
         // Read ONNX file into bytes
         let mut file = File::open(path)?;
         let mut buffer = Vec::new();
@@ -30,23 +31,26 @@ impl ModelLoader {
         // Parse the ONNX protobuf
         let model = ModelProto::decode(&*buffer)?;
 
-        // Print some basic metadata
-        println!("Model IR version: {:?}", model.ir_version);
-        println!("Producer: {:?}", model.producer_name);
-        println!("Domain: {:?}", model.domain);
-        println!("Model version: {:?}", model.model_version);
-        println!("Model: {:#?}", model);
-        // model.
-
-        // Access the graph
-        if let Some(graph) = &model.graph.as_ref() {
-            println!("Nodes in graph: {}", graph.node.len());
-            for (i, node) in graph.node.iter().enumerate() {
-                println!("Node {} → op_type: {}", i, node.op_type);
-            }
-        }
-
-        Ok(model)
+        Ok(Self { model })
     }
 }
 
+impl fmt::Display for ModelLoader {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "Model IR version: {:?}", self.model.ir_version)?;
+        writeln!(f, "Producer: {:?}", self.model.producer_name)?;
+        writeln!(f, "Domain: {:?}", self.model.domain)?;
+        writeln!(f, "Model version: {:?}", self.model.model_version)?;
+        writeln!(f, "Model: {:#?}", self.model)?;
+        // model.
+
+        // Access the graph
+        if let Some(graph) = &self.model.graph.as_ref() {
+            writeln!(f, "Nodes in graph: {}", graph.node.len())?;
+            for (i, node) in graph.node.iter().enumerate() {
+                writeln!(f, "Node {} → op_type: {}", i, node.op_type)?;
+            }
+        }
+        Ok(())
+    }
+}
