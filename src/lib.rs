@@ -7,7 +7,6 @@ pub mod tensor;
 pub mod ops;
 pub mod graph;
 pub mod runtime;
-pub mod utils;
 
 // Re-export generated ONNX bindings
 // The generated file name depends on the package name in the proto file.

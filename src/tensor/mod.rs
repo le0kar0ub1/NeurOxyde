@@ -1,6 +1,7 @@
 //! Tensor module: defines the Tensor struct and basic tensor utilities.
 use crate::onnx::onnx_proto;
 
+#[derive(Debug, Clone)]
 pub struct Tensor {
     shape: Vec<usize>,
     data: Vec<f32>,
@@ -19,6 +20,10 @@ impl Tensor {
 
     pub fn shape(&self) -> &[usize] {
         &self.shape
+    }
+
+    pub fn data(&self) -> &[f32] {
+        &self.data
     }
     
     pub fn from_proto(tns: &onnx_proto::TensorProto) -> Self {

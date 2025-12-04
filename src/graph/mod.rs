@@ -2,14 +2,14 @@
 
 use crate::tensor;
 #[allow(unused_imports)]
-use crate::ops::Operator;
 use std::collections::HashMap;
-use crate::onnx::onnx_proto::NodeProto;
+use crate::onnx::onnx_proto::{NodeProto, GraphProto};
 use std::fmt;
 use crate::loader::ModelLoader;
 
 pub struct Graph {
     // Placeholder for graph structure
+    pub proto: GraphProto,
     pub nodes: Vec<NodeProto>,
     pub initializers: HashMap<String, tensor::Tensor>,
     pub inputs: Vec<String>,
@@ -32,6 +32,7 @@ impl Graph {
         let outputs = g.output.iter().map(|vi| vi.name.clone()).collect();
 
         Ok(Self {
+            proto: g.clone(),
             nodes: g.node.clone(),
             initializers: inits,
             inputs,
